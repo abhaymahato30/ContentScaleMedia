@@ -10,9 +10,7 @@ export default function ClientsMarquee() {
   return (
     <section className="relative flex justify-center bg-black py-20 text-white">
       {/* TOP FADE ONLY */}
-      <div className="pointer-events-none absolute top-0 left-0 h-32 w-full bg-gradient-to-b from-transparent to-black z-10" />
 
-      {/* <div className="pointer-events-none absolute top-0 left-0 h-32 w-full bg-gradient-to-b from-black to-transparent z-10" /> */}
       {/* CONTAINER — same as navbar */}
       <div className="w-[92vw] max-w-[800px]">
         
