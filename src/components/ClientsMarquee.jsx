@@ -8,7 +8,7 @@ export default function ClientsMarquee() {
   ];
 
   return (
-    <section className="relative flex justify-center bg-black py-20 text-white">
+    <section className="relative flex justify-center bg-white py-20 text-green-700">
       {/* TOP FADE ONLY */}
 
       {/* CONTAINER — same as navbar */}

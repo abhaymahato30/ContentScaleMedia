@@ -1,15 +1,15 @@
 export default function TestimonialsGrid() {
   return (
-    <section className="relative flex justify-center bg-black px-6 pb-32 text-white">
+    <section className="bg-[#EFECCE] px-6 pb-36 text-[#315B46]">
       
-      {/* CONTAINER — SAME AS NAVBAR */}
-      <div className="grid w-[92vw] max-w-[800px] gap-6 md:grid-cols-2">
+      {/* CONTAINER — SAME WIDTH AS NAVBAR */}
+      <div className="mx-auto grid w-[92vw] max-w-[900px] gap-10 md:grid-cols-2">
         
         {/* VIDEO TESTIMONIAL */}
-        <div className="rounded-xl border border-white/15 bg-black/40 p-4 backdrop-blur-sm">
+        <div className="rounded-2xl border border-[#315B46]/20 bg-[#315B46]/5 p-6">
           
           {/* Video */}
-          <div className="aspect-video overflow-hidden rounded-lg">
+          <div className="aspect-video overflow-hidden rounded-xl border border-[#315B46]/20">
             <iframe
               className="h-full w-full"
               src="https://www.youtube.com/embed/dQw4w9WgXcQ"
@@ -20,36 +20,10 @@ export default function TestimonialsGrid() {
           </div>
 
           {/* Quote */}
-          <p className="mt-4 text-sm leading-relaxed text-white/90">
-            I’ve worked with Tuvyam and his team for a few months, creating
-            10–12 videos. They’ve boosted my viewership and handled everything
-            smoothly with great communication.
-          </p>
-
-          {/* Author */}
-          <div className="mt-4 flex items-center gap-3">
-            <img
-              src="https://i.pravatar.cc/100?img=5"
-              alt=""
-              className="h-9 w-9 rounded-full"
-            />
-            <div className="text-xs">
-              <p className="font-semibold text-white">Katie Lee</p>
-              <p className="text-white/60">
-                CGC Talks Miscarriage and Fertility
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* TEXT TESTIMONIAL */}
-        <div className="rounded-xl border border-white/15 bg-black/40 p-6 backdrop-blur-sm">
-          
-          <p className="text-sm leading-relaxed text-white/90">
-            I’ve been working with Tuvyam for over a year, and we’ve created
-            40–50 videos together. Some of his edits have even reached millions
-            of views. The creativity and accountability his team brings are
-            truly commendable.
+          <p className="mt-6 text-sm leading-relaxed opacity-80">
+            “I’ve worked with the team for several months, creating consistent
+            short-form content. Communication was proactive, and the system they
+            built helped grow viewership without guesswork.”
           </p>
 
           {/* Author */}
@@ -60,9 +34,37 @@ export default function TestimonialsGrid() {
               className="h-9 w-9 rounded-full"
             />
             <div className="text-xs">
-              <p className="font-semibold text-white">Deevankshu Garg</p>
-              <p className="text-white/60">
-                Founder @thecodeskool
+              <p className="font-bold">Katie Lee</p>
+              <p className="opacity-60">
+                Personal Brand
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* TEXT TESTIMONIAL */}
+        <div className="rounded-2xl border border-[#315B46]/20 bg-[#315B46]/5 p-8">
+          
+          <p className="text-sm leading-relaxed opacity-80">
+            “Over the past year, we created dozens of videos together. Some
+            reached millions of views, but more importantly, the consistency
+            and accountability made content feel manageable and effective.”
+          </p>
+
+          {/* DIVIDER */}
+          <div className="my-6 h-[1px] w-12 bg-[#315B46]/30" />
+
+          {/* Author */}
+          <div className="flex items-center gap-3">
+            <img
+              src="https://i.pravatar.cc/100?img=7"
+              alt=""
+              className="h-9 w-9 rounded-full"
+            />
+            <div className="text-xs">
+              <p className="font-bold">Deevankshu Garg</p>
+              <p className="opacity-60">
+                Founder, The Code Skool
               </p>
             </div>
           </div>

@@ -4,9 +4,7 @@ import logo from "../assets/logo.png";
 export default function Navbar() {
   const [open, setOpen] = useState(false);
 
-  // 🔥 Enhanced hover pill (bigger + smoother)
-  const navItemClass =
-    `
+  const navItemClass = `
     cursor-pointer
     rounded-md
     px-3 py-1
@@ -14,11 +12,10 @@ export default function Navbar() {
     transition-all duration-300 ease-out
     hover:bg-white/10
     hover:px-3 hover:py-4
-    
-    `;
+  `;
 
   return (
-    <header className="sticky top-0 z-50 flex justify-center pt-4">
+    <header className="fixed top-0 left-0 z-50 w-full flex justify-center pt-4">
       <nav
         className="
           w-[92vw] max-w-[800px]
@@ -32,7 +29,6 @@ export default function Navbar() {
       >
         {/* MAIN ROW */}
         <div className="flex items-center gap-4 px-5 py-5">
-          
           {/* LOGO */}
           <img
             src={logo}
@@ -89,7 +85,7 @@ export default function Navbar() {
 
               <button
                 className="
-                  mt-0 ml-auto w-fit
+                  mt-2 ml-auto w-fit
                   cursor-pointer
                   rounded-md
                   bg-gradient-to-r from-indigo-500 to-purple-600

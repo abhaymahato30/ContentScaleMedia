@@ -1,64 +1,70 @@
+"use client";
+
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const faqs = [
   {
-    q: "How fast will I receive my videos?",
-    a: "The delivery time for your videos depends on the package you choose. Typically, you can expect to receive your videos within a day to 2-3 days, ensuring you get your content promptly to meet your needs.",
+    q: "Who is this service for?",
+    a: "We work primarily with brands, real estate professionals, and financial advisors who want to build authority and generate inbound demand through short-form content.",
   },
   {
-    q: "How do I request videos?",
-    a: "We’ll grant you access to our internal system where you upload your videos with ease. Send us your videos, and we’ll do the rest.",
+    q: "How quickly can I expect results?",
+    a: "Most clients begin seeing meaningful traction within the first 30–60 days as consistency and distribution compound.",
   },
   {
-    q: "Why wouldn't I just hire my own editor?",
-    a: "Hiring your own editor can be time-consuming and difficult. At Editify Media, we manage everything — editing, communication, and quality checks — so you don’t have to.",
+    q: "Do you handle posting and distribution?",
+    a: "Yes. We deliver platform-ready content and can manage consistent distribution depending on your engagement level.",
   },
   {
-    q: "What if I'm not happy with my video?",
-    a: "This doesn’t happen very often, but if it does — you get unlimited revisions until you love the final result.",
-  },
-  {
-    q: "Do you offer trials or make example videos?",
-    a: "No worries! We’ll continue to revise the design until you’re 100% satisfied.",
-  },
-  {
-    q: "What are some common mistakes to avoid in video editing?",
-    a: "Common mistakes include neglecting audio quality, excessive effects, poor color correction, inconsistent editing style, and ignoring white balance.",
-  },
-  {
-    q: "Are there any refunds if I don't like the service?",
-    a: "Due to the high-quality nature of the work, there will be no refunds issued.",
+    q: "Is this a long-term commitment?",
+    a: "Short-form content works best as a system. While there’s no hard lock-in, long-term consistency delivers the highest ROI.",
   },
 ];
 
-export default function FaqSection() {
+export default function FAQSection() {
   const [openIndex, setOpenIndex] = useState(null);
 
   return (
-    <section className="relative bg-black px-6 py-28 text-white">
-      <div className="mx-auto w-[92vw] max-w-[760px]">
-        
+    <section className="bg-[#315B46] px-6 py-36 text-[#EFECCE]">
+      <div className="mx-auto max-w-[900px]">
+        {/* TITLE */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+          className="mb-16 text-center"
+        >
+          <h2 className="text-4xl font-extrabold tracking-tight sm:text-5xl">
+            Frequently Asked Questions
+          </h2>
+          <p className="mx-auto mt-4 max-w-2xl text-lg text-[#EFECCE]/80">
+            Clear answers before you decide to move forward.
+          </p>
+        </motion.div>
+
         {/* FAQ LIST */}
-        <div className="space-y-3">
-          {faqs.map((faq, index) => {
-            const isOpen = openIndex === index;
+        <div className="flex flex-col gap-4">
+          {faqs.map((item, i) => {
+            const isOpen = openIndex === i;
 
             return (
               <div
-                key={index}
-                className="rounded-lg border border-white/10 bg-white/5 backdrop-blur-lg transition-all"
+                key={i}
+                className="rounded-xl border border-[#EFECCE]/15 bg-[#EFECCE]/5"
               >
                 {/* QUESTION */}
                 <button
-                  onClick={() =>
-                    setOpenIndex(isOpen ? null : index)
-                  }
-                  className="flex w-full items-center justify-between px-5 py-4 text-left text-sm font-semibold text-white"
+                  onClick={() => setOpenIndex(isOpen ? null : i)}
+                  className="flex w-full items-center justify-between px-6 py-5 text-left"
                 >
-                  <span>{faq.q}</span>
+                  <span className="text-base font-bold tracking-wide">
+                    {item.q}
+                  </span>
                   <span
                     className={`text-xl transition-transform duration-300 ${
-                      isOpen ? "rotate-45 text-indigo-500" : "text-white"
+                      isOpen ? "rotate-45" : ""
                     }`}
                   >
                     +
@@ -66,27 +72,24 @@ export default function FaqSection() {
                 </button>
 
                 {/* ANSWER */}
-                <div
-                  className={`grid transition-all duration-300 ease-in-out ${
-                    isOpen
-                      ? "grid-rows-[1fr] opacity-100"
-                      : "grid-rows-[0fr] opacity-0"
-                  }`}
-                >
-                  <div className="overflow-hidden px-5 pb-4 text-sm leading-relaxed text-white/80">
-                    {faq.a}
-                  </div>
-                </div>
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.35, ease: "easeOut" }}
+                      className="overflow-hidden"
+                    >
+                      <p className="px-6 pb-6 text-sm leading-relaxed text-[#EFECCE]/80">
+                        {item.a}
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             );
           })}
-        </div>
-
-        {/* CTA */}
-        <div className="mt-10 flex justify-center">
-          <button className="rounded-md bg-indigo-600 px-6 py-3 text-sm font-bold text-white transition-all duration-300 hover:bg-white hover:text-black">
-            Book A 30-Min Call →
-          </button>
         </div>
       </div>
     </section>

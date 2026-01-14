@@ -1,29 +1,28 @@
 export default function TestimonialsIntro() {
   return (
-    <section className="relative flex justify-center bg-black px-6 py-6 text-white">
-      
-      {/* Container – SAME WIDTH AS NAVBAR */}
-      <div className="w-[92vw] max-w-[800px] text-center">
+    <section className="bg-[#EFECCE] px-6 py-24 text-[#315B46]">
+      {/* CONTAINER — SAME WIDTH AS NAVBAR */}
+      <div className="mx-auto w-[92vw] max-w-[900px] text-center">
         
-        {/* Bigger pill */}
+        {/* PILL */}
         <div className="mb-8 flex justify-center">
-          <span className="rounded-lg border border-white/25 px-6 py-2 text-sm font-semibold tracking-wide text-white/80">
+          <span className="rounded-lg border border-[#315B46]/30 px-6 py-2 text-sm font-semibold tracking-wide">
             Our Clients
           </span>
         </div>
 
-        {/* Heading */}
-        <h2 className="text-4xl font-semibold leading-[1.25] sm:text-4xl md:text-5xl">
-          Hear it directly from{" "}
-          <span className="font-['Instrument_Serif'] font-normal text-indigo-500 text-4xl sm:text-4xl md:text-5xl leading-[1.2]">
-            our clients.
-          </span>
+        {/* HEADING */}
+        <h2 className="text-4xl font-extrabold leading-tight sm:text-5xl">
+          Hear it directly from
+          <br />
+          <span className="opacity-80">the people we work with.</span>
         </h2>
 
-        {/* Subtext */}
-        <p className="mx-auto mt-8 max-w-2xl text-base leading-relaxed text-white/70 sm:text-lg">
-          Hear what our clients have to say. Our testimonials reflect the
-          satisfaction our clients have in our services.
+        {/* SUBTEXT */}
+        <p className="mx-auto mt-8 max-w-2xl text-base leading-relaxed opacity-75 sm:text-lg">
+          Our testimonials reflect the trust our clients place in us and the
+          results that come from building consistent, authority-driven content
+          systems.
         </p>
 
       </div>

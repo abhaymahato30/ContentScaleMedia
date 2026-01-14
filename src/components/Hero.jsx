@@ -1,74 +1,141 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+import * as THREE from "three";
+import heroBg from "../assets/hero.avif";
+
 export default function Hero() {
+  const mountRef = useRef(null);
+
+  useEffect(() => {
+    const container = mountRef.current;
+    if (!container) return;
+
+    /* ===== SCENE ===== */
+    const scene = new THREE.Scene();
+    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    container.appendChild(renderer.domElement);
+
+    /* ===== TEXTURE ===== */
+    const texture = new THREE.TextureLoader().load(heroBg);
+    texture.minFilter = THREE.LinearFilter;
+
+    const geometry = new THREE.PlaneGeometry(2, 2);
+
+    /* ===== UNIFORMS ===== */
+    const uniforms = {
+      uTexture: { value: texture },
+
+      // ✅ FORCE START FROM BOTTOM CENTER
+      uMouse: { value: new THREE.Vector2(0.5, 0.95) },
+
+      uTime: { value: 0 },
+    };
+
+    /* ===== MATERIAL ===== */
+    const material = new THREE.ShaderMaterial({
+      uniforms,
+      vertexShader: `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform sampler2D uTexture;
+        uniform vec2 uMouse;
+        uniform float uTime;
+
+        varying vec2 vUv;
+
+        void main() {
+          vec2 uv = vUv;
+
+          float dist = distance(uv, uMouse);
+
+          float ripple = sin(dist * 30.0 - uTime * 4.0);
+          ripple *= exp(-dist * 8.0);
+
+          vec2 offset = normalize(uv - uMouse) * ripple * 0.015;
+
+          gl_FragColor = texture2D(uTexture, uv + offset);
+        }
+      `,
+    });
+
+    const mesh = new THREE.Mesh(geometry, material);
+    scene.add(mesh);
+
+    /* ===== MOUSE MOVE (FIXED) ===== */
+    let hasMoved = false;
+
+    const onMouseMove = (e) => {
+      if (!hasMoved) {
+        hasMoved = true; // 👈 ignore fake initial mousemove
+      }
+
+      const rect = container.getBoundingClientRect();
+      uniforms.uMouse.value.set(
+        (e.clientX - rect.left) / rect.width,
+        1.0 - (e.clientY - rect.top) / rect.height
+      );
+    };
+
+    window.addEventListener("mousemove", onMouseMove);
+
+    /* ===== ANIMATION LOOP ===== */
+    const clock = new THREE.Clock();
+    const animate = () => {
+      uniforms.uTime.value = clock.getElapsedTime();
+      renderer.render(scene, camera);
+      requestAnimationFrame(animate);
+    };
+    animate();
+
+    /* ===== CLEANUP ===== */
+    return () => {
+      window.removeEventListener("mousemove", onMouseMove);
+      container.removeChild(renderer.domElement);
+      geometry.dispose();
+      material.dispose();
+      texture.dispose();
+      renderer.dispose();
+    };
+  }, []);
+
   return (
-    <section className="relative min-h-screen bg-black px-6 pt-24 text-white overflow-hidden">
+    <section className="relative h-screen w-full overflow-hidden text-white">
+      {/* THREE CANVAS */}
+      <div ref={mountRef} className="absolute inset-0" />
 
-      {/* ================= SPLINE BACKGROUND ================= */}
-      {/* Interactive layer */}
-      <div className="absolute inset-0 z-0">
-        <iframe
-          src="https://my.spline.design/boxeshover-icz8qqg5hg1YEzjiBJewrs8H/"
-          className="h-full w-full"
-          frameBorder="0"
-          loading="lazy"
-          title="Spline Background"
-        />
-      </div>
+      {/* OVERLAY */}
+      <div className="absolute inset-0 bg-black/40 pointer-events-none" />
 
-      {/* ================= CONTENT LAYER ================= */}
-      {/* pointer-events-none ensures spline still receives hover */}
-      <div className="relative z-10 flex justify-center pointer-events-none">
-        <div className="flex w-full max-w-[800px] flex-col items-center text-center pointer-events-auto">
-
-          {/* Social proof */}
-          <div className="mb-2 flex flex-col items-center font-semibold">
-            <div className="flex flex-col items-center gap-2 md:flex-row md:gap-4">
-              <div className="flex -space-x-3">
-                {[1, 2, 3, 4].map((i) => (
-                  <img
-                    key={i}
-                    className="h-11 w-11 rounded-full border border-black"
-                    src={`https://i.pravatar.cc/80?img=${i}`}
-                    alt=""
-                  />
-                ))}
-              </div>
-              <div className="text-lg md:text-xl">★★★★★</div>
-            </div>
-            <span className="mt-1 text-sm">
-              Trusted by 20+ brands & creators
-            </span>
-          </div>
-
-          {/* Heading */}
-          <h1 className="mt-3 text-4xl font-bold leading-tight sm:text-5xl md:text-6xl font-sans">
-            Maximize your reach with
-            <br />
-            <span className="font-serif font-bold text-indigo-600 text-3xl sm:text-4xl md:text-5xl">
-              professionally edited videos
-            </span>
+      {/* CONTENT */}
+      <div className="absolute bottom-8 inset-x-0 z-10 px-6">
+        <div className="mx-auto max-w-[1400px] grid md:grid-cols-2 gap-32">
+          <h1 className="text-4xl sm:text-6xl font-extrabold">
+            Turning content into a
+            <span className="block text-white/80">growth engine.</span>
           </h1>
 
-          {/* Subtext */}
-          <p className="mt-5 max-w-2xl text-base leading-relaxed text-white/90 md:text-lg font-medium">
-            Our expert editors help you make kick-ass videos and grow faster.
-            It’s time you stood out in a sea of sameness.
-          </p>
-
-          {/* CTA buttons */}
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-            <button className="rounded-md bg-gradient-to-r from-indigo-500 to-purple-600 px-6 py-3 text-sm font-extrabold text-white transition-all duration-300 hover:opacity-90">
-              Book A Call
-            </button>
-
-            <button className="rounded-md border border-white/40 px-6 py-3 text-sm font-extrabold text-white transition-all duration-300 hover:bg-white/10">
-              Learn More
+          <div className="flex flex-col items-end text-right gap-5">
+            <p className="max-w-[420px] text-white/70 text-sm md:text-base">
+              We help brands, real estate professionals, and financial advisors
+              scale visibility, trust, and inbound demand through short-form
+              content systems.
+            </p>
+            <button className="bg-white text-black px-6 py-3 text-xs font-extrabold rounded-md">
+              👉 Book a Strategy Call
             </button>
           </div>
         </div>
       </div>
-
-      {/* ================= GLOW ================= */}
-      {/* <div className="pointer-events-none absolute top-[130px] left-1/2 -translate-x-1/2 h-[200px] w-[420px] rounded-t-full bg-indigo-600/90 blur-[45px]" /> */}
     </section>
   );
 }
