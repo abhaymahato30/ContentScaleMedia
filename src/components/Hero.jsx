@@ -1,42 +1,84 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
-import heroBg from "../assets/hero.avif";
+import heroBg from "../assets/desktop.jpg";
 
 export default function Hero() {
   const mountRef = useRef(null);
+  const [typedText, setTypedText] = useState("");
+  const fullWord = "engine.";
 
+  /* ===================== TYPING EFFECT ===================== */
+  useEffect(() => {
+    let index = 0;
+    let deleting = false;
+
+    const interval = setInterval(() => {
+      if (!deleting) {
+        setTypedText(fullWord.slice(0, index + 1));
+        index++;
+        if (index === fullWord.length) {
+          setTimeout(() => (deleting = true), 1200);
+        }
+      } else {
+        setTypedText(fullWord.slice(0, index - 1));
+        index--;
+        if (index === 0) deleting = false;
+      }
+    }, 120);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  /* ===================== THREE.JS ===================== */
   useEffect(() => {
     const container = mountRef.current;
     if (!container) return;
 
-    /* ===== SCENE ===== */
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
+
+    /* SCENE */
     const scene = new THREE.Scene();
     const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
 
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    const renderer = new THREE.WebGLRenderer({
+      alpha: true,
+      antialias: true,
+    });
+
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     container.appendChild(renderer.domElement);
 
-    /* ===== TEXTURE ===== */
-    const texture = new THREE.TextureLoader().load(heroBg);
+    /* TEXTURE */
+    const texture = new THREE.TextureLoader().load(heroBg, () => {
+      uniforms.uImageResolution.value.set(
+        texture.image.width,
+        texture.image.height
+      );
+    });
     texture.minFilter = THREE.LinearFilter;
 
     const geometry = new THREE.PlaneGeometry(2, 2);
 
-    /* ===== UNIFORMS ===== */
+    /* UNIFORMS */
     const uniforms = {
       uTexture: { value: texture },
-
-      // ✅ FORCE START FROM BOTTOM CENTER
-      uMouse: { value: new THREE.Vector2(0.5, 0.95) },
-
+      uMouse: { value: new THREE.Vector2(0.5, 0.9) },
       uTime: { value: 0 },
+      uResolution: {
+        value: new THREE.Vector2(
+          container.clientWidth,
+          container.clientHeight
+        ),
+      },
+      uImageResolution: { value: new THREE.Vector2(1, 1) },
+      uStrength: { value: isMobile ? 0.0 : 0.006 },
+      uEnableRipple: { value: !isMobile }, // 🔒 HARD STOP ON MOBILE
     };
 
-    /* ===== MATERIAL ===== */
+    /* MATERIAL */
     const material = new THREE.ShaderMaterial({
       uniforms,
       vertexShader: `
@@ -50,18 +92,41 @@ export default function Hero() {
         uniform sampler2D uTexture;
         uniform vec2 uMouse;
         uniform float uTime;
+        uniform vec2 uResolution;
+        uniform vec2 uImageResolution;
+        uniform float uStrength;
+        uniform bool uEnableRipple;
 
         varying vec2 vUv;
 
+        vec2 coverUV(vec2 uv, vec2 screen, vec2 image) {
+          float sr = screen.x / screen.y;
+          float ir = image.x / image.y;
+          vec2 newUV = uv;
+
+          if (sr < ir) {
+            float s = sr / ir;
+            newUV.y = uv.y * s + (1.0 - s) * 0.5;
+          } else {
+            float s = ir / sr;
+            newUV.x = uv.x * s + (1.0 - s) * 0.5;
+          }
+          return newUV;
+        }
+
         void main() {
-          vec2 uv = vUv;
+          vec2 uv = coverUV(vUv, uResolution, uImageResolution);
+
+          if (!uEnableRipple) {
+            gl_FragColor = texture2D(uTexture, uv);
+            return;
+          }
 
           float dist = distance(uv, uMouse);
-
           float ripple = sin(dist * 30.0 - uTime * 4.0);
           ripple *= exp(-dist * 8.0);
 
-          vec2 offset = normalize(uv - uMouse) * ripple * 0.015;
+          vec2 offset = normalize(uv - uMouse) * ripple * uStrength;
 
           gl_FragColor = texture2D(uTexture, uv + offset);
         }
@@ -71,14 +136,9 @@ export default function Hero() {
     const mesh = new THREE.Mesh(geometry, material);
     scene.add(mesh);
 
-    /* ===== MOUSE MOVE (FIXED) ===== */
-    let hasMoved = false;
-
+    /* MOUSE (DESKTOP ONLY) */
     const onMouseMove = (e) => {
-      if (!hasMoved) {
-        hasMoved = true; // 👈 ignore fake initial mousemove
-      }
-
+      if (isMobile) return;
       const rect = container.getBoundingClientRect();
       uniforms.uMouse.value.set(
         (e.clientX - rect.left) / rect.width,
@@ -86,9 +146,21 @@ export default function Hero() {
       );
     };
 
-    window.addEventListener("mousemove", onMouseMove);
+    if (!isMobile) {
+      window.addEventListener("mousemove", onMouseMove);
+    }
 
-    /* ===== ANIMATION LOOP ===== */
+    /* RESIZE */
+    const onResize = () => {
+      renderer.setSize(container.clientWidth, container.clientHeight);
+      uniforms.uResolution.value.set(
+        container.clientWidth,
+        container.clientHeight
+      );
+    };
+    window.addEventListener("resize", onResize);
+
+    /* LOOP */
     const clock = new THREE.Clock();
     const animate = () => {
       uniforms.uTime.value = clock.getElapsedTime();
@@ -97,9 +169,10 @@ export default function Hero() {
     };
     animate();
 
-    /* ===== CLEANUP ===== */
+    /* CLEANUP */
     return () => {
-      window.removeEventListener("mousemove", onMouseMove);
+      if (!isMobile) window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("resize", onResize);
       container.removeChild(renderer.domElement);
       geometry.dispose();
       material.dispose();
@@ -108,32 +181,56 @@ export default function Hero() {
     };
   }, []);
 
+  /* ===================== JSX ===================== */
   return (
-    <section className="relative h-screen w-full overflow-hidden text-white">
-      {/* THREE CANVAS */}
+    <section className="relative min-h-screen w-full overflow-hidden text-white">
+      {/* CANVAS */}
       <div ref={mountRef} className="absolute inset-0" />
 
       {/* OVERLAY */}
-      <div className="absolute inset-0 bg-black/40 pointer-events-none" />
+      <div className="absolute inset-0 bg-black/50 pointer-events-none" />
 
       {/* CONTENT */}
-      <div className="absolute bottom-8 inset-x-0 z-10 px-6">
-        <div className="mx-auto max-w-[1400px] grid md:grid-cols-2 gap-32">
-          <h1 className="text-4xl sm:text-6xl font-extrabold">
+      <div className="relative z-10 flex min-h-screen items-end md:items-center px-6 sm:px-10 pb-12 md:pb-0">
+        <div className="w-full max-w-[800px]">
+          <h1
+            className="
+              text-[2.4rem] sm:text-[3rem] md:text-[3.6rem] lg:text-[4rem]
+              font-extrabold
+              leading-[1.05]
+              tracking-tight
+            "
+          >
             Turning content into a
-            <span className="block text-white/80">growth engine.</span>
+            <span className="block mt-2 text-white/75">
+              growth {typedText}
+            </span>
           </h1>
 
-          <div className="flex flex-col items-end text-right gap-5">
-            <p className="max-w-[420px] text-white/70 text-sm md:text-base">
-              We help brands, real estate professionals, and financial advisors
-              scale visibility, trust, and inbound demand through short-form
-              content systems.
-            </p>
-            <button className="bg-white text-black px-6 py-3 text-xs font-extrabold rounded-md">
-              👉 Book a Strategy Call
-            </button>
-          </div>
+          <p className="mt-6 max-w-[480px] text-white/70 text-sm sm:text-base leading-relaxed">
+            We help brands, real estate professionals, and financial advisors
+            scale visibility, trust, and inbound demand through short-form
+            content systems.
+          </p>
+
+          <button
+            className="
+              mt-8
+              inline-flex items-center gap-2
+              bg-[#315B46]
+              text-[#EFECCE]
+              px-6 py-3
+              text-xs sm:text-sm
+              font-extrabold
+              rounded-md
+              transition-all duration-300 ease-out
+              hover:bg-[#274A39]
+              hover:scale-[1.04]
+              shadow-[0_10px_30px_rgba(49,91,70,0.45)]
+            "
+          >
+            Book a Strategy Call →
+          </button>
         </div>
       </div>
     </section>
