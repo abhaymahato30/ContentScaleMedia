@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
-import heroBg from "../assets/desktop.jpg";
+import heroDesktop from "../assets/desktop.jpg";
+import heroMobile from "../assets/mobile.jpg";
 
 export default function Hero() {
   const mountRef = useRef(null);
@@ -37,6 +38,7 @@ export default function Hero() {
     if (!container) return;
 
     const isMobile = window.matchMedia("(max-width: 768px)").matches;
+    const imageSrc = isMobile ? heroMobile : heroDesktop;
 
     /* SCENE */
     const scene = new THREE.Scene();
@@ -52,12 +54,13 @@ export default function Hero() {
     container.appendChild(renderer.domElement);
 
     /* TEXTURE */
-    const texture = new THREE.TextureLoader().load(heroBg, () => {
+    const texture = new THREE.TextureLoader().load(imageSrc, () => {
       uniforms.uImageResolution.value.set(
         texture.image.width,
         texture.image.height
       );
     });
+
     texture.minFilter = THREE.LinearFilter;
 
     const geometry = new THREE.PlaneGeometry(2, 2);
@@ -75,7 +78,7 @@ export default function Hero() {
       },
       uImageResolution: { value: new THREE.Vector2(1, 1) },
       uStrength: { value: isMobile ? 0.0 : 0.006 },
-      uEnableRipple: { value: !isMobile }, // 🔒 HARD STOP ON MOBILE
+      uEnableRipple: { value: !isMobile },
     };
 
     /* MATERIAL */
@@ -184,23 +187,18 @@ export default function Hero() {
   /* ===================== JSX ===================== */
   return (
     <section className="relative min-h-screen w-full overflow-hidden text-white">
-      {/* CANVAS */}
       <div ref={mountRef} className="absolute inset-0" />
 
-      {/* OVERLAY */}
       <div className="absolute inset-0 bg-black/50 pointer-events-none" />
 
-      {/* CONTENT */}
       <div className="relative z-10 flex min-h-screen items-end md:items-center px-6 sm:px-10 pb-12 md:pb-0">
         <div className="w-full max-w-[800px]">
-          <h1
-            className="
-              text-[2.4rem] sm:text-[3rem] md:text-[3.6rem] lg:text-[4rem]
-              font-extrabold
-              leading-[1.05]
-              tracking-tight
-            "
-          >
+          <h1 className="
+            text-[2.4rem] sm:text-[3rem] md:text-[3.6rem] lg:text-[4rem]
+            font-extrabold
+            leading-[1.05]
+            tracking-tight
+          ">
             Turning content into a
             <span className="block mt-2 text-white/75">
               growth {typedText}
@@ -213,22 +211,20 @@ export default function Hero() {
             content systems.
           </p>
 
-          <button
-            className="
-              mt-8
-              inline-flex items-center gap-2
-              bg-[#315B46]
-              text-[#EFECCE]
-              px-6 py-3
-              text-xs sm:text-sm
-              font-extrabold
-              rounded-md
-              transition-all duration-300 ease-out
-              hover:bg-[#274A39]
-              hover:scale-[1.04]
-              shadow-[0_10px_30px_rgba(49,91,70,0.45)]
-            "
-          >
+          <button className="
+            mt-8
+            inline-flex items-center gap-2
+            bg-[#315B46]
+            text-[#EFECCE]
+            px-6 py-3
+            text-xs sm:text-sm
+            font-extrabold
+            rounded-md
+            transition-all duration-300 ease-out
+            hover:bg-[#274A39]
+            hover:scale-[1.04]
+            shadow-[0_10px_30px_rgba(49,91,70,0.45)]
+          ">
             Book a Strategy Call →
           </button>
         </div>
