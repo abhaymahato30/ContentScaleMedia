@@ -1,43 +1,70 @@
-import { useState } from "react";
-import logo from "../assets/logo.png";
+import { useEffect, useState } from "react";
+import logoLight from "../assets/logo-light.png";
+import logoDark from "../assets/logo-dark.png";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  const HERO_HEIGHT = 650;
+
+  useEffect(() => {
+    const onScroll = () => {
+      setScrolled(window.scrollY > HERO_HEIGHT);
+    };
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const navItemClass = `
     cursor-pointer
     rounded-md
-    px-3 py-1
-    leading-none
+    px-3 py-2
+    text-xs sm:text-sm
+    font-semibold
     transition-all duration-300 ease-out
-    hover:bg-white/10
-    hover:px-3 hover:py-4
+    hover:px-4
+    ${
+      scrolled
+        ? "text-[#315B46] hover:bg-[#315B46]/10"
+        : "text-[#EFECCE] hover:bg-white/10"
+    }
   `;
 
   return (
-    <header className="fixed top-0 left-0 z-50 w-full flex justify-center pt-4">
+    <header className="fixed top-0 left-0 z-50 w-full flex justify-center px-3 sm:px-6 pt-3">
       <nav
-        className="
-          w-[92vw] max-w-[800px]
+        className={`
+          w-full max-w-[860px]
           rounded-xl
-          border border-white/40
-          bg-black/60
           backdrop-blur-2xl
-          shadow-[0_0_0_1px_rgba(255,255,255,0.15),0_12px_50px_rgba(0,0,0,0.65)]
           transition-all duration-300 ease-out
-        "
+          ${
+            scrolled
+              ? "bg-[#EFECCE]/70 border border-[#315B46]/15 shadow-[0_8px_30px_rgba(49,91,70,0.15)]"
+              : "bg-black/30 border border-white/10 shadow-[0_8px_35px_rgba(0,0,0,0.45)]"
+          }
+        `}
       >
         {/* MAIN ROW */}
-        <div className="flex items-center gap-4 px-5 py-5">
-          {/* LOGO */}
+        <div className="flex items-center gap-3 sm:gap-4 px-4 sm:px-6 py-3 sm:py-4">
+          {/* LOGO (UNCHANGED SIZE) */}
           <img
-            src={logo}
+            src={scrolled ? logoDark : logoLight}
             alt="Logo"
-            className="h-14 w-auto cursor-pointer select-none transition-transform duration-300 ease-out hover:scale-[1.02]"
+            className="
+              h-11
+              w-auto
+              max-w-[220px] md:max-w-[240px] lg:max-w-[260px]
+              cursor-pointer
+              select-none
+              transition-transform duration-300 ease-out
+              hover:scale-[1.03]
+            "
           />
 
           {/* DESKTOP MENU */}
-          <div className="hidden md:flex items-center gap-2 text-sm font-bold text-white">
+          <div className="hidden md:flex items-center gap-1 lg:gap-2 ml-4">
             <span className={navItemClass}>Home</span>
             <span className={navItemClass}>Our Clients</span>
             <span className={navItemClass}>Testimonial</span>
@@ -49,15 +76,17 @@ export default function Navbar() {
           <div className="hidden md:block ml-auto">
             <button
               className="
-                cursor-pointer
                 rounded-md
-                bg-gradient-to-r from-indigo-500 to-purple-600
-                px-5 py-4
-                text-sm font-extrabold text-white
-                shadow-lg
+                bg-[#315B46]
+                px-4 sm:px-5 py-2.5 sm:py-3
+                text-xs sm:text-sm
+                font-bold
+                text-[#EFECCE]
+                shadow-md
                 transition-all duration-300 ease-out
-                hover:bg-white hover:text-black hover:from-white hover:to-white
-                hover:shadow-[0_0_20px_rgba(255,255,255,0.4)]
+                hover:bg-[#274A39]
+                hover:scale-[1.04]
+                hover:shadow-[0_0_20px_rgba(49,91,70,0.45)]
               "
             >
               Book a Call
@@ -67,7 +96,11 @@ export default function Navbar() {
           {/* MOBILE MENU BUTTON */}
           <button
             onClick={() => setOpen(!open)}
-            className="md:hidden ml-auto cursor-pointer text-white text-2xl font-bold leading-none transition-transform duration-300 ease-out hover:scale-110"
+            className={`
+              md:hidden ml-auto text-2xl
+              transition-transform duration-300 ease-out hover:scale-110
+              ${scrolled ? "text-[#315B46]" : "text-[#EFECCE]"}
+            `}
           >
             ☰
           </button>
@@ -75,7 +108,13 @@ export default function Navbar() {
 
         {/* MOBILE MENU */}
         {open && (
-          <div className="md:hidden px-5 pb-5 pt-2 text-sm font-bold text-white transition-all duration-300 ease-out">
+          <div
+            className={`
+              md:hidden px-4 sm:px-6 pb-4 pt-2
+              transition-all duration-300 ease-out
+              ${scrolled ? "text-[#315B46]" : "text-[#EFECCE]"}
+            `}
+          >
             <div className="flex flex-col gap-2">
               <span className={navItemClass}>Home</span>
               <span className={navItemClass}>Our Clients</span>
@@ -85,14 +124,15 @@ export default function Navbar() {
 
               <button
                 className="
-                  mt-2 ml-auto w-fit
-                  cursor-pointer
+                  mt-3 ml-auto
                   rounded-md
-                  bg-gradient-to-r from-indigo-500 to-purple-600
-                  px-5 py-4
-                  text-sm font-extrabold text-white
+                  bg-[#315B46]
+                  px-4 py-2.5
+                  text-sm font-bold
+                  text-[#EFECCE]
                   transition-all duration-300 ease-out
-                  hover:bg-white hover:text-black hover:from-white hover:to-white
+                  hover:bg-[#274A39]
+                  hover:scale-[1.04]
                 "
               >
                 Book a Call

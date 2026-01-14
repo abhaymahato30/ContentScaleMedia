@@ -27,7 +27,7 @@ export default function Home() {
       <TestimonialsIntro/>
       <TestimonialsGrid/>
     
-      <WhatWeDo />
+      {/* <WhatWeDo /> */}
    
       <ResultsSection/>
       <ServicesSection/>
