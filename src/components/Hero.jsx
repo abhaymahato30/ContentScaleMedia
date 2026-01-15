@@ -8,7 +8,7 @@ import heroMobile from "../assets/mobile.jpg";
 export default function Hero() {
   const mountRef = useRef(null);
   const [typedText, setTypedText] = useState("");
-  const fullWord = "engine.";
+  const fullWord = "engine";
 
   /* ===================== TYPING EFFECT ===================== */
   useEffect(() => {
@@ -191,7 +191,7 @@ export default function Hero() {
 
       <div className="absolute inset-0 bg-black/50 pointer-events-none" />
 
-      <div className="relative z-10 flex min-h-screen items-end md:items-center px-6 sm:px-10 pb-12 md:pb-0">
+      <div className="relative z-10 flex min-h-screen items-end md:items-center px-6 sm:px-10 pb-18 md:pb-0">
         <div className="w-full max-w-[800px]">
           <h1 className="
             text-[2.4rem] sm:text-[3rem] md:text-[3.6rem] lg:text-[4rem]
