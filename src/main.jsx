@@ -12,7 +12,7 @@ function Root() {
     // Simulate initial loading (fonts, images, three.js)
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 1800); // adjust if needed
+    }, 3000); // adjust if needed
 
     return () => clearTimeout(timer);
   }, []);
