@@ -91,13 +91,7 @@ function Card({ video, onPlay }) {
       <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
         <div
           className="
-            rounded-full
-            bg-black/55
-            p-7
-            backdrop-blur-md
-            shadow-[0_0_30px_rgba(0,0,0,0.45)]
-            transition-transform duration-300
-            group-hover:scale-110
+           
           "
         >
           <img
@@ -148,7 +142,7 @@ function VideoModal({ videoId, onClose }) {
         </button>
 
         {/* VIDEO */}
-        <div className="aspect-video overflow-hidden rounded-lg bg-black">
+        <div className="">
           <iframe
             className="h-full w-full"
             src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`}
