@@ -13,6 +13,7 @@ import WhatWeDo from "./components/WhatWeDo";
 import RevenueSection from "./components/ReveneuSection";
 import StatsStrip from "./components/StatsStrip";
 import CTASection from "./components/CTASection";
+import PortfolioSection from "./components/PortfolioSection";
 
 
 
@@ -28,6 +29,7 @@ export default function Home() {
       <TestimonialsGrid/>
     
       {/* <WhatWeDo /> */}
+      <PortfolioSection/>
    
       <ResultsSection/>
       <ServicesSection/>

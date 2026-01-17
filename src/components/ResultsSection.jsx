@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ytShortsLogo from "../assets/yt-shorts-logo.png";
 
 export default function ResultsSection() {
@@ -11,48 +11,104 @@ export default function ResultsSection() {
     { id: "KYVvjHwdT4w", title: "Short-Form Growth Edit" },
   ];
 
+  const containerRef = useRef(null);
+  const trackRef = useRef(null);
+  const rafRef = useRef(null);
+
+  const [paused, setPaused] = useState(false);
+  const [activeVideo, setActiveVideo] = useState(null);
+
   const isMobile =
     typeof window !== "undefined" &&
     window.matchMedia("(max-width: 768px)").matches;
 
-  const [pause, setPause] = useState(false);
+  /* ================= RAF MARQUEE ================= */
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+
+    let x = 0;
+    let lastTime = performance.now();
+    const speed = 0.04; // px per ms (adjust for faster/slower)
+
+    const loop = (time) => {
+      const delta = time - lastTime;
+      lastTime = time;
+
+      if (!paused) {
+        x -= delta * speed;
+        const width = track.scrollWidth / 2;
+
+        if (Math.abs(x) >= width) {
+          x = 0;
+        }
+
+        track.style.transform = `translate3d(${x}px,0,0)`;
+      }
+
+      rafRef.current = requestAnimationFrame(loop);
+    };
+
+    rafRef.current = requestAnimationFrame(loop);
+
+    return () => cancelAnimationFrame(rafRef.current);
+  }, [paused]);
 
   return (
     <section className="bg-[#EFECCE] px-6 py-36 overflow-hidden">
-      <div className="mx-auto w-[94vw] max-w-[1100px]">
+      <div className="mx-auto max-w-[1100px]">
 
         {/* HEADING */}
         <div className="mb-20 text-center text-[#315B46]">
-          <span className="mb-4 inline-flex items-center gap-2 rounded-lg border border-[#315B46]/30 px-5 py-2 text-sm font-semibold">
-            📈 Results
-          </span>
-
-          <h2 className="mt-6 text-4xl font-extrabold tracking-tight sm:text-5xl">
+          <h2 className="text-4xl font-extrabold sm:text-5xl">
             Results That Speak for Themselves
           </h2>
-
-          <p className="mx-auto mt-6 max-w-2xl text-lg opacity-75">
-            A glimpse into the short-form systems we build for growth.
-          </p>
         </div>
 
         {/* MARQUEE */}
-        <div className="relative">
+        <div
+          ref={containerRef}
+          className="relative overflow-hidden"
+        >
           <div
-            className="flex w-max gap-10 animate-results-marquee"
-            style={{ animationPlayState: pause ? "paused" : "running" }}
+            ref={trackRef}
+            className="flex w-max gap-10"
           >
             {[...videos, ...videos].map((video, index) => (
-              <HoverVideoCard
+              <Card
                 key={index}
                 video={video}
                 isMobile={isMobile}
-                setPause={setPause}
+                setPaused={setPaused}
+                setActiveVideo={setActiveVideo}
               />
             ))}
           </div>
         </div>
 
+        {/* MOBILE MODAL */}
+        {activeVideo && (
+          <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/80">
+            <div className="relative w-full max-w-md aspect-[9/16] bg-black rounded-xl overflow-hidden">
+              <button
+                onClick={() => {
+                  setPaused(false);
+                  setActiveVideo(null);
+                }}
+                className="absolute top-3 right-3 z-10 bg-black/60 text-white px-3 py-1 rounded"
+              >
+                ✕
+              </button>
+
+              <iframe
+                className="h-full w-full"
+                src={`https://www.youtube.com/embed/${activeVideo}?autoplay=1&playsinline=1`}
+                allow="autoplay; encrypted-media"
+                allowFullScreen
+              />
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );
@@ -60,7 +116,7 @@ export default function ResultsSection() {
 
 /* ================= CARD ================= */
 
-function HoverVideoCard({ video, isMobile, setPause }) {
+function Card({ video, isMobile, setPaused, setActiveVideo }) {
   const [hovered, setHovered] = useState(false);
 
   return (
@@ -68,76 +124,69 @@ function HoverVideoCard({ video, isMobile, setPause }) {
       onMouseEnter={() => {
         if (!isMobile) {
           setHovered(true);
-          setPause(true);
+          setPaused(true);
         }
       }}
       onMouseLeave={() => {
-        setHovered(false);
-        setPause(false);
+        if (!isMobile) {
+          setHovered(false);
+          setPaused(false);
+        }
+      }}
+      onClick={() => {
+        if (isMobile) {
+          setPaused(true);
+          setActiveVideo(video.id);
+        }
       }}
       className="
         relative
         min-w-[320px]
         h-[390px]
-        overflow-hidden
         rounded-2xl
+        overflow-hidden
         border border-[#315B46]/20
         bg-[#315B46]/5
-        transition-all duration-300
+        cursor-pointer
+        transition-transform duration-300
         hover:scale-[1.03]
-        hover:shadow-[0_25px_50px_rgba(49,91,70,0.28)]
       "
     >
       {/* THUMBNAIL */}
       <img
         src={`https://img.youtube.com/vi/${video.id}/hqdefault.jpg`}
-        alt="YouTube Short thumbnail"
-        className={`
-          absolute inset-0 h-full w-full object-cover
-          transition-opacity duration-300
-          ${hovered ? "opacity-0" : "opacity-100"}
-        `}
-        loading="lazy"
+        className={`absolute inset-0 w-full h-full object-cover transition-opacity ${
+          hovered ? "opacity-0" : "opacity-100"
+        }`}
       />
 
-      {/* VIDEO (DESKTOP ONLY) */}
+      {/* DESKTOP VIDEO */}
       {!isMobile && hovered && (
         <iframe
-          className="absolute inset-0 h-full w-full"
-          src={`https://www.youtube.com/embed/${video.id}?autoplay=1&mute=1&controls=0&loop=1&playlist=${video.id}&playsinline=1&modestbranding=1`}
-          allow="autoplay; encrypted-media"
+          className="absolute inset-0 w-full h-full"
+          src={`https://www.youtube.com/embed/${video.id}?autoplay=1&mute=1&controls=0`}
+          allow="autoplay"
         />
       )}
 
-      {/* CENTER YT SHORTS LOGO OVERLAY */}
+      {/* CENTER LOGO */}
       {!hovered && (
-        <div className="absolute inset-0 z-20 flex items-center justify-center">
-          <div
-            className="
-              
-            "
-          >
-            <img
-              src={ytShortsLogo}
-              alt="YouTube Shorts"
-              className="h-20 w-20 sm:h-24 sm:w-24"
-            />
+        <div className="absolute inset-0 flex items-center justify-center z-10">
+          <div className="bg-black/55 p-7 rounded-full backdrop-blur">
+            <img src={ytShortsLogo} className="h-20 w-20" />
           </div>
         </div>
       )}
 
       {/* TITLE */}
-      <div className="absolute bottom-6 left-6 right-6 z-20">
-        <p className="text-sm font-semibold text-[#EFECCE] leading-snug">
+      <div className="absolute bottom-6 left-6 right-6 z-10">
+        <p className="text-sm font-semibold text-[#EFECCE]">
           {video.title}
         </p>
       </div>
 
-      {/* CINEMATIC OVERLAY */}
-      <div className="absolute inset-0 z-10 pointer-events-none">
-        <div className="absolute inset-0 bg-gradient-to-t from-[#315B46]/75 via-transparent to-transparent" />
-        <div className="absolute inset-0 bg-black/10" />
-      </div>
+      {/* OVERLAY */}
+      <div className="absolute inset-0 bg-gradient-to-t from-[#315B46]/70 via-transparent to-transparent pointer-events-none" />
     </div>
   );
 }
