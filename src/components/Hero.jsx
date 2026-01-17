@@ -10,6 +10,15 @@ export default function Hero() {
   const [typedText, setTypedText] = useState("");
   const fullWord = "engine";
 
+  /* ===================== CALENDLY CTA ===================== */
+  const openCalendly = () => {
+    window.open(
+      "https://calendly.com/contentscalemedia/strategycall?back=1&month=2026-01",
+      "_blank",
+      "noopener,noreferrer"
+    );
+  };
+
   /* ===================== TYPING EFFECT ===================== */
   useEffect(() => {
     let index = 0;
@@ -40,7 +49,6 @@ export default function Hero() {
     const isMobile = window.matchMedia("(max-width: 768px)").matches;
     const imageSrc = isMobile ? heroMobile : heroDesktop;
 
-    /* SCENE */
     const scene = new THREE.Scene();
     const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
 
@@ -53,7 +61,6 @@ export default function Hero() {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     container.appendChild(renderer.domElement);
 
-    /* TEXTURE */
     const texture = new THREE.TextureLoader().load(imageSrc, () => {
       uniforms.uImageResolution.value.set(
         texture.image.width,
@@ -65,7 +72,6 @@ export default function Hero() {
 
     const geometry = new THREE.PlaneGeometry(2, 2);
 
-    /* UNIFORMS */
     const uniforms = {
       uTexture: { value: texture },
       uMouse: { value: new THREE.Vector2(0.5, 0.9) },
@@ -81,7 +87,6 @@ export default function Hero() {
       uEnableRipple: { value: !isMobile },
     };
 
-    /* MATERIAL */
     const material = new THREE.ShaderMaterial({
       uniforms,
       vertexShader: `
@@ -139,7 +144,6 @@ export default function Hero() {
     const mesh = new THREE.Mesh(geometry, material);
     scene.add(mesh);
 
-    /* MOUSE (DESKTOP ONLY) */
     const onMouseMove = (e) => {
       if (isMobile) return;
       const rect = container.getBoundingClientRect();
@@ -149,11 +153,8 @@ export default function Hero() {
       );
     };
 
-    if (!isMobile) {
-      window.addEventListener("mousemove", onMouseMove);
-    }
+    if (!isMobile) window.addEventListener("mousemove", onMouseMove);
 
-    /* RESIZE */
     const onResize = () => {
       renderer.setSize(container.clientWidth, container.clientHeight);
       uniforms.uResolution.value.set(
@@ -163,7 +164,6 @@ export default function Hero() {
     };
     window.addEventListener("resize", onResize);
 
-    /* LOOP */
     const clock = new THREE.Clock();
     const animate = () => {
       uniforms.uTime.value = clock.getElapsedTime();
@@ -172,7 +172,6 @@ export default function Hero() {
     };
     animate();
 
-    /* CLEANUP */
     return () => {
       if (!isMobile) window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("resize", onResize);
@@ -211,22 +210,28 @@ export default function Hero() {
             content systems.
           </p>
 
-          <button className="
-            mt-8
-            inline-flex items-center gap-2
-            bg-[#315B46]
-            text-[#EFECCE]
-            px-6 py-3
-            text-xs sm:text-sm
-            font-extrabold
-            rounded-md
-            transition-all duration-300 ease-out
-            hover:bg-[#274A39]
-            hover:scale-[1.04]
-            shadow-[0_10px_30px_rgba(49,91,70,0.45)]
-          ">
-            Book a Strategy Call →
-          </button>
+          {/* ✅ WORKING CTA */}
+         <button
+  onClick={openCalendly}
+  className="
+    mt-8
+    inline-flex items-center gap-2
+    bg-[#315B46]
+    text-[#EFECCE]
+    px-6 py-3
+    text-xs sm:text-sm
+    font-extrabold
+    rounded-md
+    cursor-pointer
+    transition-all duration-300 ease-out
+    hover:bg-[#274A39]
+    hover:scale-[1.04]
+    shadow-[0_10px_30px_rgba(49,91,70,0.45)]
+  "
+>
+  Book a Strategy Call →
+</button>
+
         </div>
       </div>
     </section>

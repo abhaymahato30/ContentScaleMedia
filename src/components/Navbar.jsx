@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import logoLight from "../assets/logo-light.png";
 import logoDark from "../assets/logo-dark.png";
+import { FiPhone } from "react-icons/fi";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -12,9 +13,38 @@ export default function Navbar() {
     const onScroll = () => {
       setScrolled(window.scrollY > HERO_HEIGHT);
     };
+
+    const onKeyDown = (e) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+
     window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("keydown", onKeyDown);
+    };
   }, []);
+
+  // 🔹 Smooth scroll + hash update
+  const scrollToSection = (id) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+      window.history.replaceState(null, "", `#${id}`);
+      setOpen(false);
+    }
+  };
+
+  // 🔹 Calendly CTA
+  const openCalendly = () => {
+    window.open(
+      "https://calendly.com/contentscalemedia/strategycall?back=1&month=2026-01",
+      "_blank",
+      "noopener,noreferrer"
+    );
+  };
 
   const navItemClass = `
     cursor-pointer
@@ -48,16 +78,15 @@ export default function Navbar() {
       >
         {/* MAIN ROW */}
         <div className="flex items-center gap-3 sm:gap-4 px-4 sm:px-6 py-3 sm:py-4">
-          {/* LOGO (UNCHANGED SIZE) */}
+          {/* LOGO */}
           <img
             src={scrolled ? logoDark : logoLight}
             alt="Logo"
+            onClick={() => scrollToSection("hero")}
             className="
-              h-11
-              w-auto
+              h-11 w-auto
               max-w-[220px] md:max-w-[240px] lg:max-w-[260px]
-              cursor-pointer
-              select-none
+              cursor-pointer select-none
               transition-transform duration-300 ease-out
               hover:scale-[1.03]
             "
@@ -65,39 +94,55 @@ export default function Navbar() {
 
           {/* DESKTOP MENU */}
           <div className="hidden md:flex items-center gap-1 lg:gap-2 ml-4">
-            <span className={navItemClass}>Home</span>
-            <span className={navItemClass}>Our Clients</span>
-            <span className={navItemClass}>Testimonial</span>
-            <span className={navItemClass}>Our Services</span>
-            <span className={navItemClass}>Portfolio</span>
+            <span className={navItemClass} onClick={() => scrollToSection("hero")}>
+              Home
+            </span>
+            <span className={navItemClass} onClick={() => scrollToSection("testimonials")}>
+              Testimonials
+            </span>
+            <span className={navItemClass} onClick={() => scrollToSection("portfolio")}>
+              Portfolio
+            </span>
+            <span className={navItemClass} onClick={() => scrollToSection("results")}>
+              Results
+            </span>
+            <span className={navItemClass} onClick={() => scrollToSection("services")}>
+              Services
+            </span>
           </div>
 
-          {/* CTA */}
+          {/* DESKTOP CTA */}
           <div className="hidden md:block ml-auto">
             <button
+              onClick={openCalendly}
               className="
-                rounded-md
+                inline-flex items-center gap-2
                 bg-[#315B46]
-                px-4 sm:px-5 py-2.5 sm:py-3
-                text-xs sm:text-sm
-                font-bold
                 text-[#EFECCE]
-                shadow-md
+                px-4 py-2.5
+                text-xs sm:text-sm
+                font-extrabold
+                rounded-md
+                cursor-pointer
                 transition-all duration-300 ease-out
                 hover:bg-[#274A39]
                 hover:scale-[1.04]
-                hover:shadow-[0_0_20px_rgba(49,91,70,0.45)]
+                active:scale-[0.97]
+                shadow-[0_10px_30px_rgba(49,91,70,0.45)]
               "
             >
-              Book a Call
+              <FiPhone className="text-base sm:text-lg" />
+              Book a Strategy Call →
             </button>
           </div>
 
           {/* MOBILE MENU BUTTON */}
           <button
+            aria-label="Toggle menu"
             onClick={() => setOpen(!open)}
             className={`
               md:hidden ml-auto text-2xl
+              cursor-pointer
               transition-transform duration-300 ease-out hover:scale-110
               ${scrolled ? "text-[#315B46]" : "text-[#EFECCE]"}
             `}
@@ -116,26 +161,43 @@ export default function Navbar() {
             `}
           >
             <div className="flex flex-col gap-2">
-              <span className={navItemClass}>Home</span>
-              <span className={navItemClass}>Our Clients</span>
-              <span className={navItemClass}>Testimonial</span>
-              <span className={navItemClass}>Our Services</span>
-              <span className={navItemClass}>Portfolio</span>
+              <span className={navItemClass} onClick={() => scrollToSection("hero")}>
+                Home
+              </span>
+              <span className={navItemClass} onClick={() => scrollToSection("testimonials")}>
+                Testimonials
+              </span>
+              <span className={navItemClass} onClick={() => scrollToSection("portfolio")}>
+                Portfolio
+              </span>
+              <span className={navItemClass} onClick={() => scrollToSection("results")}>
+                Results
+              </span>
+              <span className={navItemClass} onClick={() => scrollToSection("services")}>
+                Services
+              </span>
 
+              {/* MOBILE CTA */}
               <button
+                onClick={openCalendly}
                 className="
-                  mt-3 ml-auto
-                  rounded-md
+                  mt-4 ml-auto
+                  inline-flex items-center gap-2
                   bg-[#315B46]
-                  px-4 py-2.5
-                  text-sm font-bold
                   text-[#EFECCE]
+                  px-5 py-2.5
+                  text-sm
+                  font-extrabold
+                  rounded-md
+                  cursor-pointer
                   transition-all duration-300 ease-out
                   hover:bg-[#274A39]
                   hover:scale-[1.04]
+                  active:scale-[0.97]
                 "
               >
-                Book a Call
+                <FiPhone className="text-lg" />
+                Book a Strategy Call →
               </button>
             </div>
           </div>

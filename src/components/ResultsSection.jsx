@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import ytShortsLogo from "../assets/yt-shorts-logo.png";
 
 export default function ResultsSection() {
@@ -11,103 +11,39 @@ export default function ResultsSection() {
     { id: "KYVvjHwdT4w", title: "Short-Form Growth Edit" },
   ];
 
-  const containerRef = useRef(null);
-  const trackRef = useRef(null);
-  const rafRef = useRef(null);
-
-  const [paused, setPaused] = useState(false);
   const [activeVideo, setActiveVideo] = useState(null);
 
-  const isMobile =
-    typeof window !== "undefined" &&
-    window.matchMedia("(max-width: 768px)").matches;
-
-  /* ================= RAF MARQUEE ================= */
-  useEffect(() => {
-    const track = trackRef.current;
-    if (!track) return;
-
-    let x = 0;
-    let lastTime = performance.now();
-    const speed = 0.04; // px per ms (adjust for faster/slower)
-
-    const loop = (time) => {
-      const delta = time - lastTime;
-      lastTime = time;
-
-      if (!paused) {
-        x -= delta * speed;
-        const width = track.scrollWidth / 2;
-
-        if (Math.abs(x) >= width) {
-          x = 0;
-        }
-
-        track.style.transform = `translate3d(${x}px,0,0)`;
-      }
-
-      rafRef.current = requestAnimationFrame(loop);
-    };
-
-    rafRef.current = requestAnimationFrame(loop);
-
-    return () => cancelAnimationFrame(rafRef.current);
-  }, [paused]);
-
   return (
-    <section className="bg-[#EFECCE] px-6 py-36 overflow-hidden">
-      <div className="mx-auto max-w-[1100px]">
+    <section className="bg-[#EFECCE] px-6 py-32">
+      <div className="mx-auto max-w-[1000px]">
 
         {/* HEADING */}
         <div className="mb-20 text-center text-[#315B46]">
           <h2 className="text-4xl font-extrabold sm:text-5xl">
             Results That Speak for Themselves
           </h2>
+          <p className="mx-auto mt-4 max-w-2xl text-lg opacity-75">
+            Short-form content edited for reach, retention, and growth.
+          </p>
         </div>
 
-        {/* MARQUEE */}
-        <div
-          ref={containerRef}
-          className="relative overflow-hidden"
-        >
-          <div
-            ref={trackRef}
-            className="flex w-max gap-10"
-          >
-            {[...videos, ...videos].map((video, index) => (
-              <Card
-                key={index}
-                video={video}
-                isMobile={isMobile}
-                setPaused={setPaused}
-                setActiveVideo={setActiveVideo}
-              />
-            ))}
-          </div>
+        {/* GRID — ALWAYS 2 PER ROW */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 justify-items-center">
+          {videos.map((video, index) => (
+            <Card
+              key={index}
+              video={video}
+              onPlay={() => setActiveVideo(video.id)}
+            />
+          ))}
         </div>
 
-        {/* MOBILE MODAL */}
+        {/* MODAL */}
         {activeVideo && (
-          <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/80">
-            <div className="relative w-full max-w-md aspect-[9/16] bg-black rounded-xl overflow-hidden">
-              <button
-                onClick={() => {
-                  setPaused(false);
-                  setActiveVideo(null);
-                }}
-                className="absolute top-3 right-3 z-10 bg-black/60 text-white px-3 py-1 rounded"
-              >
-                ✕
-              </button>
-
-              <iframe
-                className="h-full w-full"
-                src={`https://www.youtube.com/embed/${activeVideo}?autoplay=1&playsinline=1`}
-                allow="autoplay; encrypted-media"
-                allowFullScreen
-              />
-            </div>
-          </div>
+          <VideoModal
+            videoId={activeVideo}
+            onClose={() => setActiveVideo(null)}
+          />
         )}
       </div>
     </section>
@@ -116,77 +52,111 @@ export default function ResultsSection() {
 
 /* ================= CARD ================= */
 
-function Card({ video, isMobile, setPaused, setActiveVideo }) {
-  const [hovered, setHovered] = useState(false);
-
+function Card({ video, onPlay }) {
   return (
     <div
-      onMouseEnter={() => {
-        if (!isMobile) {
-          setHovered(true);
-          setPaused(true);
-        }
-      }}
-      onMouseLeave={() => {
-        if (!isMobile) {
-          setHovered(false);
-          setPaused(false);
-        }
-      }}
-      onClick={() => {
-        if (isMobile) {
-          setPaused(true);
-          setActiveVideo(video.id);
-        }
-      }}
+      onClick={onPlay}
       className="
+        group
         relative
-        min-w-[320px]
-        h-[390px]
-        rounded-2xl
+        w-full
+        max-w-[420px]
+        h-[420px]
+        cursor-pointer
         overflow-hidden
+        rounded-2xl
         border border-[#315B46]/20
         bg-[#315B46]/5
-        cursor-pointer
-        transition-transform duration-300
-        hover:scale-[1.03]
+        transition-all duration-300 ease-out
+        hover:-translate-y-2
+        hover:shadow-[0_30px_55px_rgba(49,91,70,0.35)]
       "
     >
       {/* THUMBNAIL */}
       <img
         src={`https://img.youtube.com/vi/${video.id}/hqdefault.jpg`}
-        className={`absolute inset-0 w-full h-full object-cover transition-opacity ${
-          hovered ? "opacity-0" : "opacity-100"
-        }`}
+        alt={video.title}
+        className="
+          absolute inset-0 h-full w-full object-cover
+          transition-transform duration-500 ease-out
+          group-hover:scale-[1.06]
+          cursor-pointer
+        "
       />
 
-      {/* DESKTOP VIDEO */}
-      {!isMobile && hovered && (
-        <iframe
-          className="absolute inset-0 w-full h-full"
-          src={`https://www.youtube.com/embed/${video.id}?autoplay=1&mute=1&controls=0`}
-          allow="autoplay"
-        />
-      )}
+      {/* OVERLAY */}
+      <div className="absolute inset-0 bg-black/25 pointer-events-none" />
 
       {/* CENTER LOGO */}
-      {!hovered && (
-        <div className="absolute inset-0 flex items-center justify-center z-10">
-          <div className="bg-black/55 p-7 rounded-full backdrop-blur">
-            <img src={ytShortsLogo} className="h-20 w-20" />
-          </div>
+      <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+        <div
+          className="
+            rounded-full
+            bg-black/55
+            p-7
+            backdrop-blur-md
+            shadow-[0_0_30px_rgba(0,0,0,0.45)]
+            transition-transform duration-300
+            group-hover:scale-110
+          "
+        >
+          <img
+            src={ytShortsLogo}
+            alt="YouTube Shorts"
+            className="h-20 w-20"
+          />
         </div>
-      )}
+      </div>
 
       {/* TITLE */}
       <div className="absolute bottom-6 left-6 right-6 z-10">
-        <p className="text-sm font-semibold text-[#EFECCE]">
+        <p className="text-sm font-semibold text-[#EFECCE] leading-snug">
           {video.title}
         </p>
       </div>
 
-      {/* OVERLAY */}
-      <div className="absolute inset-0 bg-gradient-to-t from-[#315B46]/70 via-transparent to-transparent pointer-events-none" />
+      {/* GRADIENT */}
+      <div className="absolute inset-0 bg-gradient-to-t from-[#315B46]/75 via-transparent to-transparent pointer-events-none" />
+    </div>
+  );
+}
+
+/* ================= MODAL ================= */
+
+function VideoModal({ videoId, onClose }) {
+  return (
+    <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/80 px-4">
+      <div className="relative w-full max-w-3xl rounded-xl bg-[#EFECCE] p-4">
+        
+        {/* CLOSE */}
+        <button
+          onClick={onClose}
+          className="
+            absolute -top-4 -right-4
+            flex h-10 w-10 items-center justify-center
+            rounded-full
+            bg-[#315B46]
+            text-[#EFECCE]
+            text-lg
+            shadow-lg
+            cursor-pointer
+            transition-transform
+            hover:scale-110
+          "
+        >
+          ✕
+        </button>
+
+        {/* VIDEO */}
+        <div className="aspect-video overflow-hidden rounded-lg bg-black">
+          <iframe
+            className="h-full w-full"
+            src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`}
+            allow="autoplay; encrypted-media"
+            allowFullScreen
+          />
+        </div>
+      </div>
     </div>
   );
 }

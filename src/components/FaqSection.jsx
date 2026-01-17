@@ -20,7 +20,47 @@ const faqs = [
     q: "Is this a long-term commitment?",
     a: "Short-form content works best as a system. While there’s no hard lock-in, long-term consistency delivers the highest ROI.",
   },
+
+  // 🔽 NEW FAQs START HERE
+
+  {
+    q: "What platforms do you create content for?",
+    a: "We primarily focus on Instagram Reels, YouTube Shorts, and TikTok, ensuring each piece of content is optimized for platform-specific performance.",
+  },
+  {
+    q: "Do I need to be on camera?",
+    a: "Not necessarily. While on-camera content performs best, we also offer faceless, voice-over, and hybrid formats depending on your comfort level.",
+  },
+  {
+    q: "How much time do I need to invest each week?",
+    a: "Very minimal. Most clients spend 30–60 minutes per week reviewing content or recording short clips. We handle the rest.",
+  },
+  {
+    q: "Do you provide content ideas and scripts?",
+    a: "Yes. We handle ideation, scripting, hooks, and content frameworks tailored to your niche and audience.",
+  },
+  {
+    q: "What makes your service different from hiring a freelancer?",
+    a: "We don’t just edit videos — we build a repeatable content system focused on positioning, consistency, and long-term growth.",
+  },
+  {
+    q: "Will this help generate leads or sales?",
+    a: "Our strategy is designed to build authority and inbound demand. While results vary, many clients see improved lead quality and trust over time.",
+  },
+  {
+    q: "Can you work with my existing content?",
+    a: "Absolutely. We can repurpose podcasts, long-form videos, webinars, or existing clips into high-performing short-form content.",
+  },
+  {
+    q: "Is there a minimum contract length?",
+    a: "No strict minimums. However, we recommend at least a 3-month engagement to allow the system to fully compound.",
+  },
+  {
+    q: "How do we get started?",
+    a: "You can book a strategy call to discuss your goals, audience, and content direction. From there, we create a customized content plan.",
+  },
 ];
+
 
 export default function FAQSection() {
   const [openIndex, setOpenIndex] = useState(null);
