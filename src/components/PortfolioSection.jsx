@@ -18,9 +18,7 @@ export default function PortfolioSection() {
 
         {/* HEADING */}
         <div className="mb-16 text-center">
-          <span className="inline-flex items-center rounded-full border border-[#315B46]/30 px-5 py-2 text-sm font-semibold">
-            🎬 Portfolio
-          </span>
+        
 
           <h2 className="mt-6 text-4xl font-extrabold tracking-tight sm:text-5xl">
             Long-Form Client Work

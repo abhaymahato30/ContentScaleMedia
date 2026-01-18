@@ -3,15 +3,15 @@
 export default function TestimonialsGrid() {
   const clients = [
     {
-      name: "Armando Novelo",
+      name: "Marcella ",
       videoId: "yIMiNTuGOok",
     },
     {
-      name: "Marcella",
+      name: "David",
       videoId: "NHVe6DtYLbI",
     },
     {
-      name: "David",
+      name: "Armando Novelo",
       videoId: "J18RptRqyB0",
     },
   ];

@@ -83,7 +83,7 @@ export default function StatsStrip() {
           </h3>
           <div className="mx-auto my-4 h-[1px] w-16 bg-[#EFECCE]/50" />
           <p className="text-sm uppercase tracking-wide text-[#EFECCE]/80">
-            Credibility
+          Revenue 
           </p>
         </motion.div>
 
