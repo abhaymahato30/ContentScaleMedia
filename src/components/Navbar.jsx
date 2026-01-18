@@ -27,7 +27,6 @@ export default function Navbar() {
     };
   }, []);
 
-  // 🔹 Smooth scroll + hash update
   const scrollToSection = (id) => {
     const el = document.getElementById(id);
     if (el) {
@@ -37,7 +36,6 @@ export default function Navbar() {
     }
   };
 
-  // 🔹 Calendly CTA
   const openCalendly = () => {
     window.open(
       "https://calendly.com/contentscalemedia/strategycall?back=1&month=2026-01",
@@ -77,7 +75,8 @@ export default function Navbar() {
         `}
       >
         {/* MAIN ROW */}
-        <div className="flex items-center gap-3 sm:gap-4 px-4 sm:px-6 py-3 sm:py-4">
+        <div className="flex items-center gap-3 sm:gap-4 px-4 sm:px-6 py-3.5 sm:py-8">
+          
           {/* LOGO */}
           <img
             src={scrolled ? logoDark : logoLight}
@@ -94,21 +93,11 @@ export default function Navbar() {
 
           {/* DESKTOP MENU */}
           <div className="hidden md:flex items-center gap-1 lg:gap-2 ml-4">
-            <span className={navItemClass} onClick={() => scrollToSection("hero")}>
-              Home
-            </span>
-            <span className={navItemClass} onClick={() => scrollToSection("testimonials")}>
-              Testimonials
-            </span>
-            <span className={navItemClass} onClick={() => scrollToSection("portfolio")}>
-              Portfolio
-            </span>
-            <span className={navItemClass} onClick={() => scrollToSection("results")}>
-              Results
-            </span>
-            <span className={navItemClass} onClick={() => scrollToSection("services")}>
-              Services
-            </span>
+            <span className={navItemClass} onClick={() => scrollToSection("hero")}>Home</span>
+            <span className={navItemClass} onClick={() => scrollToSection("testimonials")}>Testimonials</span>
+            <span className={navItemClass} onClick={() => scrollToSection("portfolio")}>Portfolio</span>
+            <span className={navItemClass} onClick={() => scrollToSection("results")}>Results</span>
+            <span className={navItemClass} onClick={() => scrollToSection("services")}>Services</span>
           </div>
 
           {/* DESKTOP CTA */}
@@ -117,21 +106,22 @@ export default function Navbar() {
               onClick={openCalendly}
               className="
                 inline-flex items-center gap-2
+                whitespace-nowrap
                 bg-[#315B46]
                 text-[#EFECCE]
-                px-4 py-2.5
-                text-xs sm:text-sm
-                font-extrabold
+                px-2.5 py-3.5
+                text-[11px]
+                font-bold
                 rounded-md
                 cursor-pointer
                 transition-all duration-300 ease-out
                 hover:bg-[#274A39]
-                hover:scale-[1.04]
+                hover:scale-[1.02]
                 active:scale-[0.97]
-                shadow-[0_10px_30px_rgba(49,91,70,0.45)]
+                shadow-[0_8px_25px_rgba(49,91,70,0.4)]
               "
             >
-              <FiPhone className="text-base sm:text-lg" />
+              <FiPhone className="text-sm shrink-0" />
               Book a Strategy Call →
             </button>
           </div>
@@ -161,21 +151,11 @@ export default function Navbar() {
             `}
           >
             <div className="flex flex-col gap-2">
-              <span className={navItemClass} onClick={() => scrollToSection("hero")}>
-                Home
-              </span>
-              <span className={navItemClass} onClick={() => scrollToSection("testimonials")}>
-                Testimonials
-              </span>
-              <span className={navItemClass} onClick={() => scrollToSection("portfolio")}>
-                Portfolio
-              </span>
-              <span className={navItemClass} onClick={() => scrollToSection("results")}>
-                Results
-              </span>
-              <span className={navItemClass} onClick={() => scrollToSection("services")}>
-                Services
-              </span>
+              <span className={navItemClass} onClick={() => scrollToSection("hero")}>Home</span>
+              <span className={navItemClass} onClick={() => scrollToSection("testimonials")}>Testimonials</span>
+              <span className={navItemClass} onClick={() => scrollToSection("portfolio")}>Portfolio</span>
+              <span className={navItemClass} onClick={() => scrollToSection("results")}>Results</span>
+              <span className={navItemClass} onClick={() => scrollToSection("services")}>Services</span>
 
               {/* MOBILE CTA */}
               <button
@@ -183,20 +163,21 @@ export default function Navbar() {
                 className="
                   mt-4 ml-auto
                   inline-flex items-center gap-2
+                  whitespace-nowrap
                   bg-[#315B46]
                   text-[#EFECCE]
-                  px-5 py-2.5
-                  text-sm
-                  font-extrabold
+                  px-3 py-3.5
+                  text-xs
+                  font-bold
                   rounded-md
                   cursor-pointer
                   transition-all duration-300 ease-out
                   hover:bg-[#274A39]
-                  hover:scale-[1.04]
+                  hover:scale-[1.02]
                   active:scale-[0.97]
                 "
               >
-                <FiPhone className="text-lg" />
+                <FiPhone className="text-sm shrink-0" />
                 Book a Strategy Call →
               </button>
             </div>
