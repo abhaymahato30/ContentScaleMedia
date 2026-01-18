@@ -35,14 +35,15 @@ export default function Home() {
         <TestimonialsGrid />
       </section>
 
-      {/* PORTFOLIO */}
-      <section id="portfolio">
-        <PortfolioSection />
-      </section>
+  
 
       {/* RESULTS */}
-      <section id="results">
+      <section id="portfolio">
         <ResultsSection />
+      </section>
+          {/* PORTFOLIO */}
+      <section id="results">
+        <PortfolioSection />
       </section>
 
       {/* SERVICES */}

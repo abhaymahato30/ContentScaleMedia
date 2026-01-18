@@ -1,23 +1,28 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { TrendingUp, ShieldCheck, BookOpen, Zap } from "lucide-react";
 
 const items = [
   {
     title: "Consistent Visibility",
     desc: "Regular content keeps your brand present and familiar.",
+    icon: TrendingUp,
   },
   {
     title: "Trust Before Contact",
     desc: "Buyers trust you before the first conversation.",
+    icon: ShieldCheck,
   },
   {
     title: "Pre-Educated Prospects",
     desc: "Content answers objections before sales calls.",
+    icon: BookOpen,
   },
   {
     title: "Faster Conversions",
     desc: "Inbound leads convert significantly faster.",
+    icon: Zap,
   },
 ];
 
@@ -41,31 +46,57 @@ export default function RevenueTimeline() {
         <div className="absolute left-1/2 top-0 h-full w-[4px] -translate-x-1/2 bg-[#315B46]/30" />
 
         <div className="flex flex-col gap-28">
-          {items.map((item, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 60 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{
-                once: false,     // 🔥 KEY LINE
-                amount: 0.4,
-              }}
-              transition={{
-                duration: 0.6,
-                ease: "easeOut",
-              }}
-              className="relative flex justify-center"
-            >
-              {/* DOT */}
-              <div className="absolute left-1/2 z-10 h-6 w-6 -translate-x-1/2 rounded-full border-4 border-[#EFECCE] bg-[#315B46]" />
+          {items.map((item, i) => {
+            const Icon = item.icon;
 
-              {/* CARD */}
-              <div className="mt-6 w-full max-w-md rounded-xl bg-white p-6 shadow-lg">
-                <h3 className="text-lg font-bold">{item.title}</h3>
-                <p className="mt-2 text-sm opacity-75">{item.desc}</p>
-              </div>
-            </motion.div>
-          ))}
+            return (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 60 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{
+                  once: false,
+                  amount: 0.4,
+                }}
+                transition={{
+                  duration: 0.6,
+                  ease: "easeOut",
+                }}
+                className="relative flex justify-center"
+              >
+                {/* DOT */}
+                <div className="absolute left-1/2 z-10 h-6 w-6 -translate-x-1/2 rounded-full border-4 border-[#EFECCE] bg-[#315B46]" />
+
+                {/* CARD */}
+                <div
+                  className="
+                    relative
+                    mt-6
+                    w-full
+                    max-w-md
+                    rounded-2xl
+                    border border-[#315B46]/25
+                    bg-[#315B46]/10
+                    p-6
+                    backdrop-blur-sm
+                    shadow-[0_20px_40px_rgba(49,91,70,0.25)]
+                  "
+                >
+                  {/* ICON */}
+                  <div className="absolute -top-5 left-6 flex h-10 w-10 items-center justify-center rounded-full bg-[#EFECCE] text-[#315B46] shadow-md">
+                    <Icon size={18} />
+                  </div>
+
+                  <h3 className="mt-4 text-lg font-bold">
+                    {item.title}
+                  </h3>
+                  <p className="mt-2 text-sm opacity-75">
+                    {item.desc}
+                  </p>
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>

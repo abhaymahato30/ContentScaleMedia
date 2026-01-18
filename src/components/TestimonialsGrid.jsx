@@ -1,73 +1,63 @@
+"use client";
+
 export default function TestimonialsGrid() {
+  const clients = [
+    {
+      name: "Armando Novelo",
+      videoId: "yIMiNTuGOok",
+    },
+    {
+      name: "Marcella",
+      videoId: "NHVe6DtYLbI",
+    },
+    {
+      name: "David",
+      videoId: "J18RptRqyB0",
+    },
+  ];
+
   return (
     <section className="bg-[#EFECCE] px-6 pb-36 text-[#315B46]">
       
-      {/* CONTAINER — SAME WIDTH AS NAVBAR */}
-      <div className="mx-auto grid w-[92vw] max-w-[900px] gap-10 md:grid-cols-2">
+      {/* CONTAINER */}
+      <div className="mx-auto w-[92vw] max-w-[1100px]">
         
-        {/* VIDEO TESTIMONIAL */}
-        <div className="rounded-2xl border border-[#315B46]/20 bg-[#315B46]/5 p-6">
-          
-          {/* Video */}
-          <div className="aspect-video overflow-hidden rounded-xl border border-[#315B46]/20">
-            <iframe
-              className="h-full w-full"
-              src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-              title="Client Testimonial"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
-          </div>
+        {/* GRID — 3 IN ONE ROW */}
+        <div className="grid gap-8 md:grid-cols-3">
+          {clients.map((client, index) => (
+            <div
+              key={index}
+              className="
+                rounded-2xl
+                border border-[#315B46]/20
+                bg-[#315B46]/5
+                p-4
+                transition-all duration-300
+                hover:bg-[#315B46]/10
+              "
+            >
+              {/* VIDEO (SMALL SHORTS FORMAT) */}
+              <div className="aspect-[9/16] overflow-hidden rounded-xl border border-[#315B46]/20">
+                <iframe
+                  className="h-full w-full"
+                  src={`https://www.youtube.com/embed/${client.videoId}`}
+                  title={`${client.name} testimonial`}
+                  allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              </div>
 
-          {/* Quote */}
-          <p className="mt-6 text-sm leading-relaxed opacity-80">
-            “I’ve worked with the team for several months, creating consistent
-            short-form content. Communication was proactive, and the system they
-            built helped grow viewership without guesswork.”
-          </p>
-
-          {/* Author */}
-          <div className="mt-6 flex items-center gap-3">
-            <img
-              src="https://i.pravatar.cc/100?img=5"
-              alt=""
-              className="h-9 w-9 rounded-full"
-            />
-            <div className="text-xs">
-              <p className="font-bold">Katie Lee</p>
-              <p className="opacity-60">
-                Personal Brand
-              </p>
+              {/* CLIENT NAME */}
+              <div className="mt-3 text-center">
+                <p className="text-xs font-semibold">
+                  {client.name}
+                </p>
+                <p className="mt-0.5 text-[11px] opacity-60">
+                  Short-Form Video Editing Client
+                </p>
+              </div>
             </div>
-          </div>
-        </div>
-
-        {/* TEXT TESTIMONIAL */}
-        <div className="rounded-2xl border border-[#315B46]/20 bg-[#315B46]/5 p-8">
-          
-          <p className="text-sm leading-relaxed opacity-80">
-            “Over the past year, we created dozens of videos together. Some
-            reached millions of views, but more importantly, the consistency
-            and accountability made content feel manageable and effective.”
-          </p>
-
-          {/* DIVIDER */}
-          <div className="my-6 h-[1px] w-12 bg-[#315B46]/30" />
-
-          {/* Author */}
-          <div className="flex items-center gap-3">
-            <img
-              src="https://i.pravatar.cc/100?img=7"
-              alt=""
-              className="h-9 w-9 rounded-full"
-            />
-            <div className="text-xs">
-              <p className="font-bold">Deevankshu Garg</p>
-              <p className="opacity-60">
-                Founder, The Code Skool
-              </p>
-            </div>
-          </div>
+          ))}
         </div>
 
       </div>

@@ -2,155 +2,142 @@
 
 import { useState } from "react";
 import ytShortsLogo from "../assets/yt-shorts-logo.png";
+import { Play, TrendingUp, Zap, Video } from "lucide-react";
 
 export default function ResultsSection() {
   const videos = [
-    { id: "-XIqJWBygIA", title: "Real Estate Short – Lead Driven Edit" },
-    { id: "1sWH4crbYa4", title: "High-Retention Talking Head Edit" },
-    { id: "tqPaAj-gLhw", title: "Viral Hook + Caption System" },
-    { id: "KYVvjHwdT4w", title: "Short-Form Growth Edit" },
+    {
+      id: "-XIqJWBygIA",
+      title: "Real Estate Short – Lead Driven Edit",
+      icon: TrendingUp,
+    },
+    {
+      id: "1sWH4crbYa4",
+      title: "High-Retention Talking Head Edit",
+      icon: Video,
+    },
+    {
+      id: "tqPaAj-gLhw",
+      title: "Viral Hook + Caption System",
+      icon: Zap,
+    },
+    {
+      id: "KYVvjHwdT4w",
+      title: "Short-Form Growth Edit",
+      icon: Play,
+    },
   ];
 
-  const [activeVideo, setActiveVideo] = useState(null);
-
   return (
-    <section className="bg-[#EFECCE] px-6 py-32">
-      <div className="mx-auto max-w-[1000px]">
+    <section className="bg-[#EFECCE] px-6 py-28">
+      <div className="mx-auto max-w-[900px]">
 
         {/* HEADING */}
-        <div className="mb-20 text-center text-[#315B46]">
-          <h2 className="text-4xl font-extrabold sm:text-5xl">
-            Results That Speak for Themselves
+        <div className="mb-14 text-center text-[#315B46]">
+            <span className="inline-flex items-center rounded-full border border-[#315B46]/30 px-5 py-2 text-sm font-semibold">
+            🎬 Portfolio
+          </span>
+         
+          <h2 className="mt-6 text-4xl font-extrabold tracking-tight sm:text-5xl">
+            Short-Form Client Work
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-lg opacity-75">
+          <p className="mx-auto mt-3 max-w-xl text-base opacity-75">
             Short-form content edited for reach, retention, and growth.
           </p>
         </div>
 
-        {/* GRID — ALWAYS 2 PER ROW */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 justify-items-center">
+        {/* GRID — FIXED HORIZONTAL GAP */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-4">
           {videos.map((video, index) => (
-            <Card
-              key={index}
-              video={video}
-              onPlay={() => setActiveVideo(video.id)}
-            />
+            <InlineVideoCard key={index} video={video} />
           ))}
         </div>
 
-        {/* MODAL */}
-        {activeVideo && (
-          <VideoModal
-            videoId={activeVideo}
-            onClose={() => setActiveVideo(null)}
-          />
-        )}
       </div>
     </section>
   );
 }
 
-/* ================= CARD ================= */
+/* ================= INLINE PLAY CARD ================= */
 
-function Card({ video, onPlay }) {
+function InlineVideoCard({ video }) {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const Icon = video.icon;
+
   return (
     <div
-      onClick={onPlay}
       className="
         group
         relative
         w-full
-        max-w-[420px]
         h-[420px]
         cursor-pointer
         overflow-hidden
-        rounded-2xl
-        border border-[#315B46]/20
-        bg-[#315B46]/5
+        rounded-xl
+        border border-[#315B46]/25
+        bg-[#315B46]/10
         transition-all duration-300 ease-out
-        hover:-translate-y-2
-        hover:shadow-[0_30px_55px_rgba(49,91,70,0.35)]
+        hover:-translate-y-1
+        hover:bg-[#315B46]/15
+        hover:shadow-[0_25px_40px_rgba(49,91,70,0.30)]
       "
     >
-      {/* THUMBNAIL */}
-      <img
-        src={`https://img.youtube.com/vi/${video.id}/hqdefault.jpg`}
-        alt={video.title}
-        className="
-          absolute inset-0 h-full w-full object-cover
-          transition-transform duration-500 ease-out
-          group-hover:scale-[1.06]
-          cursor-pointer
-        "
-      />
+      {!isPlaying ? (
+        <>
+          {/* CLICK LAYER */}
+          <button
+            onClick={() => setIsPlaying(true)}
+            className="absolute inset-0 z-20"
+            aria-label="Play video"
+          />
 
-      {/* OVERLAY */}
-      <div className="absolute inset-0 bg-black/25 pointer-events-none" />
+          {/* ICON BADGE */}
+          <div className="absolute left-4 top-4 z-30 flex h-9 w-9 items-center justify-center rounded-full bg-[#EFECCE] text-[#315B46] shadow-sm">
+            <Icon size={16} />
+          </div>
 
-      {/* CENTER LOGO */}
-      <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
-        <div
-          className="
-           
-          "
-        >
+          {/* THUMBNAIL */}
           <img
-            src={ytShortsLogo}
-            alt="YouTube Shorts"
-            className="h-20 w-20"
+            src={`https://img.youtube.com/vi/${video.id}/hqdefault.jpg`}
+            alt={video.title}
+            className="
+              absolute inset-0 h-full w-full object-cover
+              transition-transform duration-500
+              group-hover:scale-[1.04]
+            "
           />
-        </div>
-      </div>
 
-      {/* TITLE */}
-      <div className="absolute bottom-6 left-6 right-6 z-10">
-        <p className="text-sm font-semibold text-[#EFECCE] leading-snug">
-          {video.title}
-        </p>
-      </div>
+          {/* OVERLAY */}
+          <div className="absolute inset-0 bg-black/25" />
 
-      {/* GRADIENT */}
-      <div className="absolute inset-0 bg-gradient-to-t from-[#315B46]/75 via-transparent to-transparent pointer-events-none" />
-    </div>
-  );
-}
+          {/* CENTER SHORTS LOGO */}
+          <div className="absolute inset-0 z-10 flex items-center justify-center">
+            <img
+              src={ytShortsLogo}
+              alt="YouTube Shorts"
+              className="h-12 w-12"
+            />
+          </div>
 
-/* ================= MODAL ================= */
+          {/* TITLE */}
+          <div className="absolute bottom-4 left-4 right-4 z-10">
+            <p className="text-xs font-semibold text-[#EFECCE] leading-snug">
+              {video.title}
+            </p>
+          </div>
 
-function VideoModal({ videoId, onClose }) {
-  return (
-    <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/80 px-4">
-      <div className="relative w-full max-w-3xl rounded-xl bg-[#EFECCE] p-4">
-        
-        {/* CLOSE */}
-        <button
-          onClick={onClose}
-          className="
-            absolute -top-4 -right-4
-            flex h-10 w-10 items-center justify-center
-            rounded-full
-            bg-[#315B46]
-            text-[#EFECCE]
-            text-lg
-            shadow-lg
-            cursor-pointer
-            transition-transform
-            hover:scale-110
-          "
-        >
-          ✕
-        </button>
-
-        {/* VIDEO */}
-        <div className="">
-          <iframe
-            className="h-full w-full"
-            src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`}
-            allow="autoplay; encrypted-media"
-            allowFullScreen
-          />
-        </div>
-      </div>
+          {/* GRADIENT */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#315B46]/70 via-transparent to-transparent" />
+        </>
+      ) : (
+        /* VIDEO INLINE */
+        <iframe
+          className="h-full w-full"
+          src={`https://www.youtube.com/embed/${video.id}?autoplay=1&rel=0`}
+          allow="autoplay; encrypted-media"
+          allowFullScreen
+        />
+      )}
     </div>
   );
 }
